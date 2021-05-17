@@ -2,11 +2,15 @@
 
 ## Development
 
-```shell
+Follow tauri's setup first:
 
+https://tauri.studio/en/docs/getting-started/intro
+
+```shell
+cargo install tauri-cli --version ^1.0.0-beta # Install tauri-cli
 yarn # Install dependencies
 
-yarn tauri # Start tauri debug window
+cargo tauri dev # Start tauri debug window
 # Open another terminal
 yarn start # Start react development server
 ```
