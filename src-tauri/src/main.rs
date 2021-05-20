@@ -8,7 +8,10 @@ mod sys;
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![command::get_proxy])
+        .invoke_handler(tauri::generate_handler![
+            command::get_proxy,
+            command::set_proxy,
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

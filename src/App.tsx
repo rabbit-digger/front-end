@@ -1,39 +1,42 @@
-import React, {useState, useEffect} from "react"
+import React, { useState, useEffect } from "react"
 import {
   ChakraProvider,
   Box,
   Text,
   Link,
   VStack,
-  Code,
   Grid,
   theme,
+  Button,
 } from "@chakra-ui/react"
 import { ColorModeSwitcher } from "./ColorModeSwitcher"
-import { } from '@tauri-apps/api'
-import { invoke } from "@tauri-apps/api/tauri"
+import { getProxy, setProxy } from "./command"
 
 export const App = () => {
-  const [ result, setResult ] = useState('pending...')
+  const [result, setResult] = useState('pending...')
+
   useEffect(() => {
-    invoke('get_proxy').then(r => setResult(r))
+    getProxy().then(r => setResult(JSON.stringify(r)))
   }, [])
   return <ChakraProvider theme={theme}>
     <Box textAlign="center" fontSize="xl">
       <Grid minH="100vh" p={3}>
         <ColorModeSwitcher justifySelf="flex-end" />
         <VStack spacing={8}>
+          <Button onClick={() => setProxy('Disabled')}>Disable proxy</Button>
+          <Button onClick={() => setProxy({ Enabled: { address: '127.0.0.1:12345' } })}>Enable proxy</Button>
+          <Button onClick={() => getProxy().then(r => setResult(JSON.stringify(r)))}>Get Proxy</Button>
           <Text>
             Command result: {result}.
           </Text>
           <Link
             color="teal.500"
-            href="https://chakra-ui.com"
+            href="https://github.com/rabbit-digger/"
             fontSize="2xl"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Learn Chakra
+            Github
           </Link>
         </VStack>
       </Grid>
