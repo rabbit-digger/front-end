@@ -1,4 +1,4 @@
-import * as React from "react"
+import React, {useState, useEffect} from "react"
 import {
   ChakraProvider,
   Box,
@@ -10,17 +10,21 @@ import {
   theme,
 } from "@chakra-ui/react"
 import { ColorModeSwitcher } from "./ColorModeSwitcher"
-import { Logo } from "./Logo"
+import { } from '@tauri-apps/api'
+import { invoke } from "@tauri-apps/api/tauri"
 
-export const App = () => (
-  <ChakraProvider theme={theme}>
+export const App = () => {
+  const [ result, setResult ] = useState('pending...')
+  useEffect(() => {
+    invoke('get_proxy').then(r => setResult(r))
+  }, [])
+  return <ChakraProvider theme={theme}>
     <Box textAlign="center" fontSize="xl">
       <Grid minH="100vh" p={3}>
         <ColorModeSwitcher justifySelf="flex-end" />
         <VStack spacing={8}>
-          <Logo h="40vmin" pointerEvents="none" />
           <Text>
-            Edit <Code fontSize="xl">src/App.tsx</Code> and save to reload.
+            Command result: {result}.
           </Text>
           <Link
             color="teal.500"
@@ -35,4 +39,4 @@ export const App = () => (
       </Grid>
     </Box>
   </ChakraProvider>
-)
+}
