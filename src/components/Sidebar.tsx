@@ -9,7 +9,21 @@ import {
   DrawerBody,
   DrawerContent,
   VStack,
+  Link as ChakraLink,
+  LinkProps,
 } from '@chakra-ui/react'
+import { Link as RRLink, LinkProps as RRLinkProps } from 'react-router-dom'
+
+const Link: React.FC<LinkProps & RRLinkProps> = ({ children, ...props }) => {
+  return <ChakraLink
+    {...props}
+    p={3}
+    mb={5}
+    as={RRLink}
+    w='100%'
+    textAlign='center'
+  >{children}</ChakraLink>
+}
 
 interface Props {
   onClose: () => void
@@ -19,37 +33,32 @@ interface Props {
 
 const SidebarContent = ({ onClick }: { onClick: () => void }) => (
   <VStack>
-    <Button onClick={onClick} w="100%">
-      Home
-    </Button>
-    <Button onClick={onClick} w="100%">
-      About
-    </Button>
-    <Button onClick={onClick} w="100%">
-      Contact
-    </Button>
+    <Box h='40px'>
+      Realtime
+    </Box>
+    <Link to='/net'>Net</Link>
+    <Link to='/profile'>Profile</Link>
+    <Link to='/settings'>Settings</Link>
   </VStack>
 )
 
 export const Sidebar = ({ isOpen, variant, onClose }: Props) => {
   return variant === 'sidebar' ? (
     <Box
-      position="fixed"
-      left={0}
       p={5}
       w="200px"
-      top={0}
       h="100%"
-      bg="#dfdfdf"
     >
       <SidebarContent onClick={onClose} />
     </Box>
   ) : (
     <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
       <DrawerOverlay>
-        <DrawerContent>
+        <DrawerContent
+          bg='teal.600'
+          color='white'
+        >
           <DrawerCloseButton />
-          <DrawerHeader>Chakra-UI</DrawerHeader>
           <DrawerBody>
             <SidebarContent onClick={onClose} />
           </DrawerBody>

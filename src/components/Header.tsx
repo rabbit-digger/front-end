@@ -9,13 +9,13 @@ interface Props {
 
 export const Header = ({ showSidebarButton = true, onShowSidebar }: Props) => {
   return (
-    <Flex bg="tomato" p={4} color="white" justifyContent="center">
+    <Flex p={4} justifyContent="center">
       <Box flex="1">
         {showSidebarButton && (
           <IconButton
             aria-label='Toggle Sidebar'
             icon={<HamburgerIcon w={8} h={8} />}
-            colorScheme="blackAlpha"
+            colorScheme="white"
             variant="outline"
             onClick={onShowSidebar}
           />
