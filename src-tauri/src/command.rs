@@ -1,6 +1,6 @@
 use std::error::Error as StdError;
 
-use crate::sys::proxy;
+use crate::sys::{self, proxy};
 use serde::Serialize;
 use tauri::command;
 
@@ -28,11 +28,11 @@ impl Serialize for Error {
 pub type Result<T, E = Error> = std::result::Result<T, E>;
 
 #[command]
-pub async fn get_proxy() -> Result<proxy::SystemProxy> {
-    proxy::get()
+pub async fn get_proxy() -> Result<sys::SystemProxy> {
+    proxy::get().await
 }
 
 #[command]
-pub async fn set_proxy(proxy: proxy::SystemProxy) -> Result<()> {
-    proxy::set(&proxy)
+pub async fn set_proxy(proxy: sys::SystemProxy) -> Result<()> {
+    proxy::set(&proxy).await
 }

@@ -1,16 +1,10 @@
 pub mod proxy {
     use crate::command::Result;
-    use serde::{Deserialize, Serialize};
+    use crate::sys::SystemProxy;
     use winreg::enums::*;
     use winreg::RegKey;
 
-    #[derive(Debug, Serialize, Deserialize)]
-    pub enum SystemProxy {
-        Disabled,
-        Enabled { address: String },
-    }
-
-    pub fn get() -> Result<SystemProxy> {
+    pub async fn get() -> Result<SystemProxy> {
         let inet_settings = RegKey::predef(HKEY_CURRENT_USER).open_subkey_with_flags(
             "Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings",
             KEY_READ,
@@ -23,7 +17,7 @@ pub mod proxy {
             SystemProxy::Disabled
         })
     }
-    pub fn set(proxy: &SystemProxy) -> Result<()> {
+    pub async fn set(proxy: &SystemProxy) -> Result<()> {
         let inet_settings = RegKey::predef(HKEY_CURRENT_USER).open_subkey_with_flags(
             "Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings",
             KEY_WRITE,
