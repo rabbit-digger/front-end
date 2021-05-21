@@ -11,7 +11,7 @@ export const Index: React.FC = ({ children }) => {
   const variants = useBreakpointValue({ base: smVariant, md: mdVariant })
 
   return <Box
-    bg='teal.600'
+    bg='blue.300'
     h='100vh'
     color='white'
   >

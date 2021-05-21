@@ -46,6 +46,7 @@ export const Sidebar = ({ isOpen, variant, onClose }: Props) => {
       p={5}
       w="200px"
       h="100%"
+      bg='blackAlpha.100'
     >
       <SidebarContent onClick={onClose} />
     </Box>
@@ -53,7 +54,7 @@ export const Sidebar = ({ isOpen, variant, onClose }: Props) => {
     <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
       <DrawerOverlay>
         <DrawerContent
-          bg='teal.600'
+          bg='blue.300'
           color='white'
         >
           <DrawerCloseButton />
