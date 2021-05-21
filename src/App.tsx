@@ -6,40 +6,39 @@ import {
   Link,
   VStack,
   Grid,
-  theme,
   Button,
+  useBreakpointValue,
+  useDisclosure,
 } from "@chakra-ui/react"
 import { ColorModeSwitcher } from "./ColorModeSwitcher"
 import { getProxy, setProxy } from "./command"
+import { Sidebar } from "./components/Sidebar"
+import { Header } from "./components/Header"
+
+
+const smVariant = { navigation: 'drawer', navigationButton: true } as const
+const mdVariant = { navigation: 'sidebar', navigationButton: false } as const
+
 
 export const App = () => {
   const [result, setResult] = useState('pending...')
+  const { isOpen, onToggle } = useDisclosure()
+  const variants = useBreakpointValue({ base: smVariant, md: mdVariant })
 
   useEffect(() => {
     getProxy().then(r => setResult(JSON.stringify(r)))
   }, [])
-  return <ChakraProvider theme={theme}>
-    <Box textAlign="center" fontSize="xl">
-      <Grid minH="100vh" p={3}>
-        <ColorModeSwitcher justifySelf="flex-end" />
-        <VStack spacing={8}>
-          <Button onClick={() => setProxy('Disabled')}>Disable proxy</Button>
-          <Button onClick={() => setProxy({ Enabled: { address: '127.0.0.1:12345' } })}>Enable proxy</Button>
-          <Button onClick={() => getProxy().then(r => setResult(JSON.stringify(r)))}>Get Proxy</Button>
-          <Text>
-            Command result: {result}.
-          </Text>
-          <Link
-            color="teal.500"
-            href="https://github.com/rabbit-digger/"
-            fontSize="2xl"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Github
-          </Link>
-        </VStack>
-      </Grid>
+  return <>
+    <Sidebar
+      variant={variants?.navigation ?? 'drawer'}
+      isOpen={isOpen}
+      onClose={onToggle}
+    />
+    <Box ml={!variants?.navigationButton ? 200 : undefined}>
+      <Header
+        showSidebarButton={variants?.navigationButton}
+        onShowSidebar={onToggle}
+      />
     </Box>
-  </ChakraProvider>
+  </>
 }
