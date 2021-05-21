@@ -1,11 +1,9 @@
 import React from 'react'
 import {
   Box,
-  Button,
   Drawer,
   DrawerOverlay,
   DrawerCloseButton,
-  DrawerHeader,
   DrawerBody,
   DrawerContent,
   VStack,
@@ -36,9 +34,9 @@ const SidebarContent = ({ onClick }: { onClick: () => void }) => (
     <Box h='40px'>
       Realtime
     </Box>
-    <Link to='/net'>Net</Link>
-    <Link to='/profile'>Profile</Link>
-    <Link to='/settings'>Settings</Link>
+    <Link to='/net' onClick={onClick}>Net</Link>
+    <Link to='/profile' onClick={onClick}>Profile</Link>
+    <Link to='/settings' onClick={onClick}>Settings</Link>
   </VStack>
 )
 
