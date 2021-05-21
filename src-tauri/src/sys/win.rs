@@ -12,7 +12,9 @@ pub mod proxy {
         let proxy_enabled = inet_settings.get_value::<u32, _>("ProxyEnable")? != 0;
         Ok(if proxy_enabled {
             let address = inet_settings.get_value("ProxyServer")?;
-            SystemProxy::Enabled { address }
+            let exclude = Some(inet_settings.get_value("ProxyOverride")?);
+
+            SystemProxy::Enabled { address, exclude }
         } else {
             SystemProxy::Disabled
         })
@@ -26,9 +28,12 @@ pub mod proxy {
             SystemProxy::Disabled => {
                 inet_settings.set_value("ProxyEnable", &0u32)?;
             }
-            SystemProxy::Enabled { address } => {
+            SystemProxy::Enabled { address, exclude } => {
                 inet_settings.set_value("ProxyEnable", &1u32)?;
                 inet_settings.set_value("ProxyServer", address)?;
+                if let Some(exclude) = exclude {
+                    inet_settings.set_value("ProxyOverride", exclude)?;
+                }
             }
         };
         Ok(())
