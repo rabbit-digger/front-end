@@ -1,9 +1,9 @@
 import React from 'react'
 import { useTitle } from '../index/Index'
 
-export const Net: React.FC = () => {
-  useTitle('Net')
+export const Settings: React.FC = () => {
+  useTitle('Settings')
   return <>
-    I'm Net page
+    I'm Settings page
   </>
 }
