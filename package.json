@@ -31,7 +31,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test"
+    "test": "react-scripts test",
+    "gen": "node scripts/generate.mjs"
   },
   "eslintConfig": {
     "extends": "react-app"
