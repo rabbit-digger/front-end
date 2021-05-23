@@ -1,12 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import './provider'
+import { RabbitDiggerPro } from './types'
 
-const RDPContext = React.createContext({})
+const RdpContext = React.createContext<RabbitDiggerPro | undefined>(undefined)
+export const RdpProvider = RdpContext.Provider
 
-interface RabbitDiggerProConfig {
-
-}
-export interface RabbitDiggerPro {
-  start: () => Promise<void>
-  stop: () => Promise<void>
-  setConfig: (config: RabbitDiggerProConfig) => Promise<void>
+export const useRdp = () => {
+  return useContext(RdpContext)!
 }
