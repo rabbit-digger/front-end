@@ -1,8 +1,11 @@
 use std::error::Error as StdError;
 
-use crate::sys::{self, proxy};
+use crate::{
+    sys::{self, proxy},
+    ServerListen,
+};
 use serde::Serialize;
-use tauri::command;
+use tauri::{command, State};
 
 #[derive(Debug)]
 pub struct Error(pub anyhow::Error);
@@ -35,4 +38,10 @@ pub async fn get_proxy() -> Result<sys::SystemProxy> {
 #[command]
 pub async fn set_proxy(proxy: sys::SystemProxy) -> Result<()> {
     proxy::set(&proxy).await
+}
+
+/// Get the infomation of api_server
+#[command]
+pub async fn get_api_server(server_listen: State<'_, ServerListen>) -> Result<ServerListen> {
+    Ok(server_listen.inner().clone())
 }

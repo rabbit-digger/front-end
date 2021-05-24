@@ -14,7 +14,7 @@ use uuid::Uuid;
 mod command;
 mod sys;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ServerListen {
     pub access_token: String,
     pub addr: SocketAddr,
@@ -50,6 +50,7 @@ async fn main() -> Result<()> {
         .invoke_handler(tauri::generate_handler![
             command::get_proxy,
             command::set_proxy,
+            command::get_api_server,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

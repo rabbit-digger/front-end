@@ -1,21 +1,31 @@
 import React, { useEffect, useState } from 'react'
 import { BrowserRouter } from 'react-router-dom'
+import { getApiServer, ServerListen } from './command'
 import { RdpProvider } from './rdp'
-import { getProvider } from './rdp/provider'
-import { RabbitDiggerPro } from './rdp/types'
 import { Routes } from './routes'
 
+export const getApiListen = async (): Promise<ServerListen> => {
+  try {
+    const serverInfo = await getApiServer()
+    console.log('Get server info: ', serverInfo)
+    return serverInfo
+  } catch (e) {
+    console.log("Failed to get tauri version: ", e)
+    return { addr: '', access_token: '' }
+  }
+}
+
 export const App = () => {
-  const [rdpProvider, setRdpProvider] = useState<RabbitDiggerPro | undefined>(undefined)
+  const [rdpProvider, setRdpProvider] = useState<ServerListen | undefined>(undefined)
   // TODO: display error
-  const [, setError] = useState<Error | undefined>(undefined)
+  const [error, setError] = useState<Error | undefined>(undefined)
   useEffect(() => {
-    getProvider().then(setRdpProvider).catch(setError)
+    getApiListen().then(setRdpProvider).catch(setError)
   }, [])
   return <>
     <BrowserRouter>
-      <RdpProvider value={rdpProvider}>
-        {!rdpProvider ? <>Can't connect to rabbit-digger</> : <Routes />}
+      <RdpProvider serverListen={rdpProvider}>
+        {!rdpProvider ? (error ? <>Error: {String(error)}</> : <>Loading...</>) : <Routes />}
       </RdpProvider>
     </BrowserRouter>
   </>

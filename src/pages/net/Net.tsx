@@ -1,19 +1,15 @@
 import { Box, Grid } from '@chakra-ui/react'
-import React, { useEffect, useState } from 'react'
-import { useRdp } from '../../rdp'
-import { RabbitDiggerProConfig } from '../../rdp/types'
+import React from 'react'
+import { useConfig } from '../../rdp'
 import { useTitle } from '../index/Index'
 
 export const Net: React.FC = () => {
-  const [config, setConfig] = useState<RabbitDiggerProConfig | undefined>(undefined)
   useTitle('Net')
-  const rdp = useRdp()
-  useEffect(() => { rdp.getConfig().then(setConfig) }, [rdp])
-  const netList = config?.net ? Object.entries(config.net) : undefined
-
+  const { data, error } = useConfig()
+  const netList = data?.net ? Object.entries(data.net) : undefined
 
   return <>
-    <Box>I'm Net page</Box>
+    <Box>I'm Net page {String(error)}</Box>
     <Grid>
       {netList?.map(([k, v]) => <Box key={k}>{k} {v?.type}</Box>)}
     </Grid>
