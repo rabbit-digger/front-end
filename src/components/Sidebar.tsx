@@ -27,12 +27,13 @@ interface Props {
   onClose: () => void
   isOpen: boolean
   variant: 'drawer' | 'sidebar'
+  banner?: React.ReactNode
 }
 
-const SidebarContent = ({ onClick }: { onClick: () => void }) => (
+const SidebarContent = ({ onClick, banner }: { onClick: () => void, banner?: React.ReactNode }) => (
   <VStack>
     <Box h='40px'>
-      Realtime
+      {banner}
     </Box>
     <Link to='/net' onClick={onClick}>Net</Link>
     <Link to='/profile' onClick={onClick}>Profile</Link>
@@ -40,7 +41,7 @@ const SidebarContent = ({ onClick }: { onClick: () => void }) => (
   </VStack>
 )
 
-export const Sidebar = ({ isOpen, variant, onClose }: Props) => {
+export const Sidebar = ({ isOpen, variant, onClose, banner }: Props) => {
   return variant === 'sidebar' ? (
     <Box
       p={5}
@@ -48,7 +49,7 @@ export const Sidebar = ({ isOpen, variant, onClose }: Props) => {
       h="100%"
       bg='blackAlpha.100'
     >
-      <SidebarContent onClick={onClose} />
+      <SidebarContent onClick={onClose} banner={banner} />
     </Box>
   ) : (
     <Drawer isOpen={isOpen} placement="left" onClose={onClose}>

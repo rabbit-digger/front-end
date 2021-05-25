@@ -26,6 +26,7 @@ async fn run_server(controller: &Controller) -> Result<ServerListen> {
         controller: controller.clone(),
         access_token: Some(access_token.clone()),
         web_ui: None,
+        userdata: None,
     }
     .run("127.0.0.1:0")
     .await
@@ -35,8 +36,10 @@ async fn run_server(controller: &Controller) -> Result<ServerListen> {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("rabbit_ui=trace"))
-        .init();
+    env_logger::Builder::from_env(
+        env_logger::Env::default().default_filter_or("rabbit_ui=trace,rabbit_digger_pro=trace"),
+    )
+    .init();
 
     let controller = Controller::new();
     controller.set_plugin_loader(plugin_loader).await;
