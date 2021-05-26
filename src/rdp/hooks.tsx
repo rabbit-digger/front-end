@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useMemo } from 'react'
-import useSWR, { SWRConfig } from 'swr'
+import useSWR, { SWRConfig, mutate } from 'swr'
 import { ServerListen } from '../command'
-import { RabbitDiggerConfig } from './types'
+import { RabbitDiggerConfig, RabbitDiggerProConfig } from './types'
 
 type Conn = {
   addr: string
@@ -14,12 +14,12 @@ export const useConfig = () => {
 }
 
 export const useRdpState = () => {
-  return useSWR<'idle' | 'running'>('/api/state')
+  return useSWR<'Idle' | 'Running'>('/api/state', { refreshInterval: 500 })
 }
 
 export const usePost = () => {
   const conn = useContext(ConnectionContext)
-  return useCallback(async (url: string, body: any) => {
+  return useCallback(async <R, B = unknown>(url: string, body: B): Promise<R> => {
     return (await fetch((conn ? `http://${conn.addr}` : '') + url, {
       method: 'POST',
       headers: {
@@ -28,6 +28,15 @@ export const usePost = () => {
       }, body: JSON.stringify(body)
     })).json()
   }, [conn])
+}
+
+export const usePostConfig = () => {
+  const post = usePost()
+  return useCallback(async (config: RabbitDiggerProConfig) => {
+    const r = await mutate('/api/config', post<RabbitDiggerProConfig>('/api/config', config))
+    await mutate('/api/state')
+    return r
+  }, [post])
 }
 
 export const useEvent = (onEvent: (e: string) => void) => {

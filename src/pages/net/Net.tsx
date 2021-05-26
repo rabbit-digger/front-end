@@ -1,17 +1,17 @@
 import { Box, Grid } from '@chakra-ui/react'
 import React, { useCallback, useEffect } from 'react'
-import { mutate } from 'swr'
-import { useConfig, useEvent, usePost } from '../../rdp'
+import { useConfig, useEvent, usePostConfig } from '../../rdp'
 import { useTitle } from '../index/Index'
 
 export const Net: React.FC = () => {
   useTitle('Net')
   const { data, error } = useConfig()
-  const post = usePost()
+  const postConfig = usePostConfig()
   useEvent(useCallback(e => console.log('event', e), []))
   const netList = data?.net ? Object.entries(data.net) : undefined
   useEffect(() => {
-    post('/api/config', {
+    postConfig({
+      id: '123',
       server: {
         "shit": {
           type: 'http+socks5',
@@ -19,7 +19,7 @@ export const Net: React.FC = () => {
         }
       }
     })
-  }, [post])
+  }, [postConfig])
 
   return <>
     <Box>I'm Net page {String(error)}</Box>
