@@ -5,8 +5,28 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
+export type NetAlias_NetRef = string;
+export type NetCombine_NetRef = string;
 export type EmptyConfig = null;
-export type NetTrojan_NetRef = string;
+export type NetRule_RuleItem =
+  | {
+      domain: string;
+      method: NetRule_DomainMatcherMethod;
+      type: "domain";
+      [k: string]: unknown | undefined;
+    }
+  | {
+      ipcidr: NetRule_IpCidr;
+      type: "ipcidr";
+      [k: string]: unknown | undefined;
+    }
+  | {
+      type: "any";
+      [k: string]: unknown | undefined;
+    };
+export type NetRule_DomainMatcherMethod = "keyword" | "suffix" | "match";
+export type NetRule_IpCidr = string;
+export type EmptyConfig1 = null;
 export type NetShadowsocks_Cipher =
   | "none"
   | "table"
@@ -54,49 +74,64 @@ export type NetShadowsocks_Cipher =
   | "sm4-gcm"
   | "sm4-ccm";
 export type NetShadowsocks_NetRef = string;
-export type EmptyConfig1 = null;
-export type NetSocks5_NetRef = string;
+export type NetTrojan_NetRef = string;
 export type NetSelect_NetRef = string;
-export type NetRule_RuleItem =
-  | {
-      domain: string;
-      method: NetRule_DomainMatcherMethod;
-      type: "domain";
-      [k: string]: unknown | undefined;
-    }
-  | {
-      ipcidr: NetRule_IpCidr;
-      type: "ipcidr";
-      [k: string]: unknown | undefined;
-    }
-  | {
-      type: "any";
-      [k: string]: unknown | undefined;
-    };
-export type NetRule_DomainMatcherMethod = "keyword" | "suffix" | "match";
-export type NetRule_IpCidr = string;
-export type NetCombine_NetRef = string;
-export type NetAlias_NetRef = string;
+export type NetSocks5_NetRef = string;
+export type NetRef = string;
+export type NetRef1 = string;
+export type NetRef2 = string;
+export type NetRef3 = string;
+export type NetRef4 = string;
+export type NetRef5 = string;
+export type NetRef6 = string;
+export type NetRef7 = string;
 
 export interface Config {
   net?: {
     [k: string]:
       | (
-          | EmptyConfig
-          | TrojanNetConfig
-          | SSNetConfig
-          | EmptyConfig1
-          | ClientConfig
-          | SelectConfig
-          | RuleConfig
           | Config1
           | Config2
+          | EmptyConfig
+          | RuleConfig
+          | EmptyConfig1
+          | SSNetConfig
+          | TrojanNetConfig
+          | SelectConfig
+          | ClientConfig
         )
       | undefined;
   };
   server?: {
-    [k: string]: (ServerConfig | ServerConfig1 | ServerConfig2 | ForwardConfig) | undefined;
+    [k: string]: (ServerConfig | ServerConfig1 | ForwardConfig | ServerConfig2) | undefined;
   };
+  [k: string]: unknown | undefined;
+}
+export interface Config1 {
+  net: NetAlias_NetRef;
+  type: "alias";
+  [k: string]: unknown | undefined;
+}
+export interface Config2 {
+  tcp_bind: NetCombine_NetRef;
+  tcp_connect: NetCombine_NetRef;
+  type: "combine";
+  udp_bind: NetCombine_NetRef;
+  [k: string]: unknown | undefined;
+}
+export interface RuleConfig {
+  rule: NetRule_RuleItem[];
+  type: "rule";
+  [k: string]: unknown | undefined;
+}
+export interface SSNetConfig {
+  cipher: NetShadowsocks_Cipher;
+  net?: NetShadowsocks_NetRef & string;
+  password: string;
+  port: number;
+  server: string;
+  type: "shadowsocks";
+  udp?: boolean;
   [k: string]: unknown | undefined;
 }
 export interface TrojanNetConfig {
@@ -124,14 +159,10 @@ export interface TrojanNetConfig {
   udp?: boolean;
   [k: string]: unknown | undefined;
 }
-export interface SSNetConfig {
-  cipher: NetShadowsocks_Cipher;
-  net?: NetShadowsocks_NetRef & string;
-  password: string;
-  port: number;
-  server: string;
-  type: "shadowsocks";
-  udp?: boolean;
+export interface SelectConfig {
+  list: string[];
+  selected: NetSelect_NetRef;
+  type: "select";
   [k: string]: unknown | undefined;
 }
 export interface ClientConfig {
@@ -141,46 +172,32 @@ export interface ClientConfig {
   type: "socks5";
   [k: string]: unknown | undefined;
 }
-export interface SelectConfig {
-  net_list: NetSelect_NetRef[];
-  type: "select";
-  [k: string]: unknown | undefined;
-}
-export interface RuleConfig {
-  rule: NetRule_RuleItem[];
-  type: "rule";
-  [k: string]: unknown | undefined;
-}
-export interface Config1 {
-  tcp_bind: NetCombine_NetRef;
-  tcp_connect: NetCombine_NetRef;
-  type: "combine";
-  udp_bind: NetCombine_NetRef;
-  [k: string]: unknown | undefined;
-}
-export interface Config2 {
-  net: NetAlias_NetRef;
-  type: "alias";
-  [k: string]: unknown | undefined;
-}
 export interface ServerConfig {
   bind: string;
-  type: "socks5";
+  listen?: NetRef;
+  net?: NetRef1;
+  type: "http";
   [k: string]: unknown | undefined;
 }
 export interface ServerConfig1 {
   bind: string;
-  type: "http+socks5";
-  [k: string]: unknown | undefined;
-}
-export interface ServerConfig2 {
-  bind: string;
-  type: "http";
+  listen?: NetRef2;
+  net?: NetRef3;
+  type: "socks5";
   [k: string]: unknown | undefined;
 }
 export interface ForwardConfig {
   bind: string;
+  listen?: NetRef4;
+  net?: NetRef5;
   target: string;
   type: "forward";
+  [k: string]: unknown | undefined;
+}
+export interface ServerConfig2 {
+  bind: string;
+  listen?: NetRef6;
+  net?: NetRef7;
+  type: "http+socks5";
   [k: string]: unknown | undefined;
 }
