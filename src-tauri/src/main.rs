@@ -36,16 +36,16 @@ async fn run_server(controller: &Controller) -> Result<ServerListen> {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    env_logger::Builder::from_env(
-        env_logger::Env::default().default_filter_or("rabbit_ui=trace,rabbit_digger_pro=trace"),
-    )
-    .init();
+    if std::env::var_os("RUST_LOG").is_none() {
+        std::env::set_var("RUST_LOG", "rabbit_ui=trace,rabbit_digger_pro=trace")
+    }
+    tracing_subscriber::fmt::init();
 
     let controller = Controller::new();
     controller.set_plugin_loader(plugin_loader).await;
     let server = run_server(&controller).await?;
 
-    log::debug!("server: {:?}", server);
+    tracing::debug!("server: {:?}", server);
 
     tauri::Builder::default()
         .manage(controller)
