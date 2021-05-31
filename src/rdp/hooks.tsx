@@ -9,6 +9,35 @@ type Conn = {
 }
 const ConnectionContext = React.createContext<Conn | null>(null)
 
+export class FetchError extends Error {
+  constructor(public res: Response) {
+    super("Response error")
+  }
+}
+
+const getFetcher = (conn: Conn | null) => {
+  const fetcher = <T extends unknown>(
+    input: string,
+    init?: RequestInit
+  ) => fetch((conn ? `http://${conn.addr}` : '') + input, {
+    ...(init ?? {}),
+    headers: {
+      ...(init?.headers ?? {}),
+      authorization: conn?.accessToken ?? '',
+    }
+  }).then(res => {
+    if (res.status !== 200) {
+      throw new FetchError(res)
+    }
+    if (res.headers.get('content-type') === 'application/json') {
+      return res.json() as T
+    } else {
+      return res.body as T
+    }
+  })
+  return fetcher
+}
+
 export const useConfig = () => {
   return useSWR<RabbitDiggerConfig>('/api/config')
 }
@@ -20,13 +49,14 @@ export const useRdpState = () => {
 export const usePost = () => {
   const conn = useContext(ConnectionContext)
   return useCallback(async <R, B = unknown>(url: string, body: B): Promise<R> => {
-    return (await fetch((conn ? `http://${conn.addr}` : '') + url, {
+    const fetch = getFetcher(conn)
+    return await fetch<R>(url, {
       method: 'POST',
       headers: {
-        authorization: conn?.accessToken ?? '',
         'content-type': 'application/json',
-      }, body: JSON.stringify(body)
-    })).json()
+      },
+      body: JSON.stringify(body)
+    })
   }, [conn])
 }
 
@@ -37,6 +67,21 @@ export const usePostConfig = () => {
     await mutate('/api/state')
     return r
   }, [post])
+}
+
+export const useUserdata = (path: string) => {
+  return useSWR<{ code: number } | {}>('/api/userdata/' + path)
+}
+
+export const usePutUserdata = () => {
+  const conn = useContext(ConnectionContext)
+  return useCallback(async (name: string, data: string) => {
+    const fetch = getFetcher(conn)
+    await fetch(`/api/userdata/${name}`, {
+      method: 'PUT',
+      body: data
+    })
+  }, [conn])
 }
 
 export const useEvent = (onEvent: (e: string) => void) => {
@@ -54,20 +99,13 @@ export const useEvent = (onEvent: (e: string) => void) => {
 }
 
 export const RdpProvider: React.FC<{ serverListen: ServerListen | undefined }> = ({ children, serverListen }) => {
-  const fetcher = (input: string, init?: RequestInit | undefined) => fetch((serverListen ? `http://${serverListen.addr}` : '') + input, {
-    ...(init ?? {})
-    ,
-    headers: {
-      ...(init?.headers ?? {}),
-      authorization: serverListen?.access_token ?? ''
-    }
-  }).then(res => res.json())
   const conn = useMemo(() => serverListen ? {
     addr: serverListen.addr,
     accessToken: serverListen.access_token
   } : null, [serverListen])
+
   return <SWRConfig value={{
-    fetcher
+    fetcher: getFetcher(conn)
   }}>
     <ConnectionContext.Provider value={conn}>
       {children}
