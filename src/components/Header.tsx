@@ -25,7 +25,7 @@ export const Header = ({ showSidebarButton = true, onShowSidebar, left, right, t
         )}
         {left}
       </Box>
-      <Center flex="1" h="40px">
+      <Center flex="1" h="30px">
         <Text fontSize="xl">{title}</Text>
       </Center>
       <Box flex="1">{right}</Box>

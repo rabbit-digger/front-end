@@ -10,16 +10,20 @@ import {
   Link as ChakraLink,
   LinkProps,
 } from '@chakra-ui/react'
-import { Link as RRLink, LinkProps as RRLinkProps } from 'react-router-dom'
+import { Link as RRLink, LinkProps as RRLinkProps, matchPath, useLocation } from 'react-router-dom'
 
-const Link: React.FC<LinkProps & RRLinkProps> = ({ children, ...props }) => {
+const Link: React.FC<Omit<LinkProps, 'to'> & RRLinkProps & { to: string }> = ({ children, to, ...props }) => {
+  const { pathname } = useLocation()
+  const selected = matchPath(pathname, to)
   return <ChakraLink
     {...props}
+    to={to}
     p={3}
-    mb={5}
     as={RRLink}
     w='100%'
     textAlign='center'
+    bg={selected ? 'blackAlpha.100' : undefined}
+    _hover={{ textDecoration: 'none', bg: 'blackAlpha.200' }}
   >{children}</ChakraLink>
 }
 
@@ -31,8 +35,10 @@ interface Props {
 }
 
 const SidebarContent = ({ onClick, banner }: { onClick: () => void, banner?: React.ReactNode }) => (
-  <VStack>
-    <Box h='40px'>
+  <VStack spacing={0}>
+    <Box
+      h='62px'
+    >
       {banner}
     </Box>
     <Link to='/net' onClick={onClick}>Net</Link>
@@ -44,7 +50,6 @@ const SidebarContent = ({ onClick, banner }: { onClick: () => void, banner?: Rea
 export const Sidebar = ({ isOpen, variant, onClose, banner }: Props) => {
   return variant === 'sidebar' ? (
     <Box
-      p={5}
       w="200px"
       h="100%"
       bg='blackAlpha.100'
@@ -52,10 +57,10 @@ export const Sidebar = ({ isOpen, variant, onClose, banner }: Props) => {
       <SidebarContent onClick={onClose} banner={banner} />
     </Box>
   ) : (
-    <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
+    <Drawer isOpen={isOpen} placement="left" onClose={onClose} size='xs'>
       <DrawerOverlay>
         <DrawerContent
-          bg='blue.300'
+          bg='teal.600'
           color='white'
         >
           <DrawerCloseButton />

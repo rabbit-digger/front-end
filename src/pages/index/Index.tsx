@@ -22,7 +22,7 @@ export const Index: React.FC = ({ children }) => {
   const { data } = useRdpState()
 
   return <Box
-    bg='blue.300'
+    bg='teal.600'
     h='100vh'
     color='white'
   >
