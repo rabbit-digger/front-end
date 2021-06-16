@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useCallback } from 'react'
-import { FetchError, usePutUserdata, useUserdata } from '../../rdp'
+import { FetchError, useDeleteUserdata, usePutUserdata, useUserdata } from '../../rdp'
 
 export const Index = 'index.json'
 export type ProfileType = {
@@ -18,6 +18,7 @@ export const DefaultIndex: IndexType = {
 export const useProfile = () => {
   const { data, error, mutate } = useUserdata(Index)
   const put = usePutUserdata()
+  const del = useDeleteUserdata()
   const index = (typeof data?.body === 'string') ? (JSON.parse(data.body) as IndexType) : undefined
 
   const newProfile = useCallback(async () => {
@@ -48,13 +49,13 @@ export const useProfile = () => {
   const deleteProfile = useCallback(async (filename: string) => {
     if (!index) return
 
-    await put(filename, '')
+    await del(filename)
     await put(Index, JSON.stringify({
       ...index,
       profile: index.profile?.filter(i => i.filename !== filename) ?? [],
     } as IndexType))
     mutate()
-  }, [index, put, mutate])
+  }, [index, del, put, mutate])
 
   useEffect(() => {
     if (error instanceof FetchError && error.res.status === 404) {

@@ -84,6 +84,16 @@ export const usePutUserdata = () => {
   }, [conn])
 }
 
+export const useDeleteUserdata = () => {
+  const conn = useContext(ConnectionContext)
+  return useCallback(async (name: string) => {
+    const fetch = getFetcher(conn)
+    await fetch(`/api/userdata/${name}`, {
+      method: 'DELETE',
+    })
+  }, [conn])
+}
+
 export const useEvent = (onEvent: (e: string) => void) => {
   const conn = useContext(ConnectionContext)
 
