@@ -70,7 +70,7 @@ export const usePostConfig = () => {
 }
 
 export const useUserdata = (path: string) => {
-  return useSWR<{ code: number } | {}>('/api/userdata/' + path)
+  return useSWR<{ body: string }>('/api/userdata/' + path)
 }
 
 export const usePutUserdata = () => {

@@ -1,9 +1,11 @@
-import { ChakraProvider, ColorModeScript, theme } from "@chakra-ui/react"
+import { ChakraProvider, ColorModeScript, extendTheme, withDefaultColorScheme } from "@chakra-ui/react"
 import * as React from "react"
 import ReactDOM from "react-dom"
 import { App } from "./App"
 import reportWebVitals from "./reportWebVitals"
 import * as serviceWorker from "./serviceWorker"
+
+const theme = extendTheme(withDefaultColorScheme({ colorScheme: "teal" }))
 
 ReactDOM.render(
   <React.StrictMode>

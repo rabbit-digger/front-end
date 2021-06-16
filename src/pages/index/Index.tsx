@@ -41,7 +41,7 @@ export const Index: React.FC = ({ children }) => {
             onShowSidebar={onToggle}
           />
         </Box>
-        <Box bg='white' p={3} color='black' h='100%' borderRadius='5'>
+        <Box bg='white' p={3} color='black' h='100%' borderRadius='5' overflowY='auto'>
           <TitleCtx.Provider value={setTitle}>
             {children}
           </TitleCtx.Provider>

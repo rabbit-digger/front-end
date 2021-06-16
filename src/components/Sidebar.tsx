@@ -37,6 +37,7 @@ interface Props {
 const SidebarContent = ({ onClick, banner }: { onClick: () => void, banner?: React.ReactNode }) => (
   <VStack spacing={0}>
     <Box
+      width='100%'
       h='62px'
     >
       {banner}
