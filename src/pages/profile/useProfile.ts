@@ -71,7 +71,7 @@ export const useProfile = () => {
     const config = YAML.parse(await fetchUserdata(filename)) as RabbitDiggerConfig
     await postConfig({
       id: filename,
-      config,
+      ...config,
     })
     mutate()
   }, [mutate, postConfig, fetchUserdata])
