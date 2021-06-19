@@ -4,38 +4,7 @@ import ReactDOM from "react-dom"
 import { App } from "./App"
 import reportWebVitals from "./reportWebVitals"
 import * as serviceWorker from "./serviceWorker"
-import { languages } from './importMonaco'
-import 'monaco-yaml/lib/esm/monaco.contribution'
-import schema from './rdp/jsonSchema.json'
-import EditorWorker from 'worker-loader!monaco-editor/esm/vs/editor/editor.worker'
-import YamlWorker from 'worker-loader!monaco-yaml/lib/esm/yaml.worker'
-
-// @ts-ignore
-window.MonacoEnvironment = {
-  getWorker(workerId: string, label: string) {
-    if (label === 'yaml') {
-      return new YamlWorker();
-    }
-    return new EditorWorker();
-  },
-};
-
-// @ts-ignore
-languages.yaml.yamlDefaults.setDiagnosticsOptions({
-  validate: true,
-  enableSchemaRequest: true,
-  hover: true,
-  completion: true,
-  schemas: [
-    {
-      fileMatch: ['*'],
-      schema: {
-        id: 'Config',
-        ...schema,
-      },
-    },
-  ]
-})
+import './monaco'
 
 const theme = extendTheme(withDefaultColorScheme({ colorScheme: "teal" }))
 

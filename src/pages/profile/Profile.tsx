@@ -6,9 +6,9 @@ import { useTitle } from '../index/Index'
 import { ProfileType, useProfile } from './useProfile'
 import { YamlEditor } from '../../components/YamlEditor'
 
-const Editor: React.FC<{ filename: string }> = () => {
+const Editor: React.FC<{ filename: string }> = ({ filename }) => {
   return <>
-    <YamlEditor value={''} />
+    <YamlEditor filename={filename} value={''} />
   </>
 }
 

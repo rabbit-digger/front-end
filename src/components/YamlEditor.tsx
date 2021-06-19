@@ -8,7 +8,7 @@ const Style: React.CSSProperties = {
   overflow: 'hidden',
 }
 
-export const YamlEditor: React.FC<{ value: string }> = () => {
+export const YamlEditor: React.FC<{ filename: string, value: string }> = () => {
   const [width, setWidth] = useState(0)
   const [height, setHeight] = useState(0)
   const [div, setDiv] = useState<HTMLDivElement | null>(null)
@@ -31,6 +31,9 @@ export const YamlEditor: React.FC<{ value: string }> = () => {
       width={width}
       height={height}
       language='yaml'
+      options={{
+        tabSize: 2,
+      }}
     />
   </div>
 }
