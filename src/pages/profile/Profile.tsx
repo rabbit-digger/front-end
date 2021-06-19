@@ -1,14 +1,39 @@
 import { DeleteIcon, EditIcon, CheckIcon } from '@chakra-ui/icons'
-import { VStack, HStack, Box, Button, Divider, IconButton, Drawer, useDisclosure, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, DrawerFooter, Input } from '@chakra-ui/react'
+import { VStack, HStack, Box, Button, Divider, IconButton, Drawer, useDisclosure, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, DrawerFooter, Spinner } from '@chakra-ui/react'
 import React from 'react'
-import { useConfig } from '../../rdp'
+import { useConfig, usePutUserdata, useUserdata } from '../../rdp'
 import { useTitle } from '../index/Index'
 import { ProfileType, useProfile } from './useProfile'
 import { YamlEditor } from '../../components/YamlEditor'
+import { useState } from 'react'
+import { useEffect } from 'react'
 
-const Editor: React.FC<{ filename: string }> = ({ filename }) => {
+const EditorDrawer: React.FC<{ filename: string, onClose: () => void }> = ({ filename, onClose }) => {
+  const { data, mutate } = useUserdata(filename)
+  const put = usePutUserdata()
+  const [value, setValue] = useState('')
+
+  useEffect(() => {
+    if (data) {
+      setValue(data.body)
+    }
+  }, [data, setValue])
+
   return <>
-    <YamlEditor filename={filename} value={''} />
+    <DrawerBody>
+      {data ? <YamlEditor filename={filename} value={value} onChange={setValue} /> : <Spinner />}
+    </DrawerBody>
+
+    <DrawerFooter>
+      <Button variant="outline" mr={3} onClick={onClose}>
+        Cancel
+      </Button>
+      <Button colorScheme="blue" disabled={!data} onClick={async () => {
+        await put(filename, value)
+        mutate()
+        onClose()
+      }}>Save</Button>
+    </DrawerFooter>
   </>
 }
 
@@ -38,16 +63,7 @@ const ProfileItem: React.FC<{ profile: ProfileType }> = ({ profile: { filename }
         <DrawerCloseButton />
         <DrawerHeader>Edit {filename}</DrawerHeader>
 
-        <DrawerBody>
-          <Editor filename={filename} />
-        </DrawerBody>
-
-        <DrawerFooter>
-          <Button variant="outline" mr={3} onClick={onClose}>
-            Cancel
-          </Button>
-          <Button colorScheme="blue">Save</Button>
-        </DrawerFooter>
+        <EditorDrawer filename={filename} onClose={onClose} />
       </DrawerContent>
     </Drawer>
     <HStack>
