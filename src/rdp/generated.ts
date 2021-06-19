@@ -5,9 +5,36 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type NetAlias_NetRef = string;
-export type NetCombine_NetRef = string;
 export type EmptyConfig = null;
+export type ObfsNetConfig =
+  | {
+      obfs_param: string;
+      obfs_type: "http_simple";
+      [k: string]: unknown | undefined;
+    }
+  | {
+      obfs_type: "plain";
+      [k: string]: unknown | undefined;
+    };
+export type RemoteNetConfig =
+  | {
+      mode: "active";
+      /**
+       * An address contains host and port.
+       * For example: example.com:80, 1.1.1.1:53, [::1]:443
+       */
+      remote: string;
+      [k: string]: unknown | undefined;
+    }
+  | {
+      /**
+       * An address contains host and port.
+       * For example: example.com:80, 1.1.1.1:53, [::1]:443
+       */
+      bind: string;
+      mode: "passive";
+      [k: string]: unknown | undefined;
+    };
 export type NetRule_RuleItem =
   | {
       domain: string;
@@ -21,12 +48,16 @@ export type NetRule_RuleItem =
       [k: string]: unknown | undefined;
     }
   | {
+      region: string;
+      type: "geoip";
+      [k: string]: unknown | undefined;
+    }
+  | {
       type: "any";
       [k: string]: unknown | undefined;
     };
 export type NetRule_DomainMatcherMethod = "keyword" | "suffix" | "match";
 export type NetRule_IpCidr = string;
-export type EmptyConfig1 = null;
 export type NetShadowsocks_Cipher =
   | "none"
   | "table"
@@ -73,10 +104,6 @@ export type NetShadowsocks_Cipher =
   | "xchacha20-ietf-poly1305"
   | "sm4-gcm"
   | "sm4-ccm";
-export type NetShadowsocks_NetRef = string;
-export type NetTrojan_NetRef = string;
-export type NetSelect_NetRef = string;
-export type NetSocks5_NetRef = string;
 export type NetRef = string;
 export type NetRef1 = string;
 export type NetRef2 = string;
@@ -85,57 +112,199 @@ export type NetRef4 = string;
 export type NetRef5 = string;
 export type NetRef6 = string;
 export type NetRef7 = string;
+export type RemoteProtocolConfig =
+  | {
+      mode: "active";
+      /**
+       * An address contains host and port.
+       * For example: example.com:80, 1.1.1.1:53, [::1]:443
+       */
+      remote: string;
+      [k: string]: unknown | undefined;
+    }
+  | {
+      /**
+       * An address contains host and port.
+       * For example: example.com:80, 1.1.1.1:53, [::1]:443
+       */
+      bind: string;
+      mode: "passive";
+      [k: string]: unknown | undefined;
+    };
+export type ServerShadowsocks_Cipher =
+  | "none"
+  | "table"
+  | "rc4-md5"
+  | "aes-128-ctr"
+  | "aes-192-ctr"
+  | "aes-256-ctr"
+  | "aes-128-cfb1"
+  | "aes-128-cfb8"
+  | "aes-128-cfb"
+  | "aes-192-cfb1"
+  | "aes-192-cfb8"
+  | "aes-192-cfb"
+  | "aes-256-cfb1"
+  | "aes-256-cfb8"
+  | "aes-256-cfb"
+  | "aes-128-ofb"
+  | "aes-192-ofb"
+  | "aes-256-ofb"
+  | "camellia-128-ctr"
+  | "camellia-192-ctr"
+  | "camellia-256-ctr"
+  | "camellia-128-cfb1"
+  | "camellia-128-cfb8"
+  | "camellia-128-cfb"
+  | "camellia-192-cfb1"
+  | "camellia-192-cfb8"
+  | "camellia-192-cfb"
+  | "camellia-256-cfb1"
+  | "camellia-256-cfb8"
+  | "camellia-256-cfb"
+  | "camellia-128-ofb"
+  | "camellia-192-ofb"
+  | "camellia-256-ofb"
+  | "rc4"
+  | "chacha20-ietf"
+  | "aes-128-gcm"
+  | "aes-256-gcm"
+  | "chacha20-ietf-poly1305"
+  | "aes-128-ccm"
+  | "aes-256-ccm"
+  | "aes-128-gcm-siv"
+  | "aes-256-gcm-siv"
+  | "xchacha20-ietf-poly1305"
+  | "sm4-gcm"
+  | "sm4-ccm";
+export type NetRef8 = string;
+export type NetRef9 = string;
+export type NetRef10 = string;
+export type NetRef11 = string;
 
 export interface Config {
+  id?: string;
   net?: {
     [k: string]:
       | (
-          | Config1
-          | Config2
+          | AliasNetConfig
+          | CombineNetConfig
+          | HttpNetConfig
+          | LocalNetConfig
           | EmptyConfig
-          | RuleConfig
-          | EmptyConfig1
+          | ObfsNetConfig
+          | RawNetConfig
+          | RemoteNetConfig
+          | ResolveConfig
+          | RuleNetConfig
+          | SelectNetConfig
           | SSNetConfig
+          | Socks5NetConfig
           | TrojanNetConfig
-          | SelectConfig
-          | ClientConfig
         )
       | undefined;
   };
   server?: {
-    [k: string]: (ServerConfig | ServerConfig1 | ForwardConfig | ServerConfig2) | undefined;
+    [k: string]:
+      | (
+          | ForwardNetConfig
+          | HttpServerConfig
+          | MixedServerConfig
+          | RawServerConfig
+          | RemoteProtocolConfig
+          | SSServerConfig
+          | Socks5ServerConfig
+        )
+      | undefined;
   };
   [k: string]: unknown | undefined;
 }
-export interface Config1 {
-  net: NetAlias_NetRef;
+export interface AliasNetConfig {
+  net: string;
   type: "alias";
   [k: string]: unknown | undefined;
 }
-export interface Config2 {
-  tcp_bind: NetCombine_NetRef;
-  tcp_connect: NetCombine_NetRef;
+export interface CombineNetConfig {
+  tcp_bind: string;
+  tcp_connect: string;
   type: "combine";
-  udp_bind: NetCombine_NetRef;
+  udp_bind: string;
   [k: string]: unknown | undefined;
 }
-export interface RuleConfig {
+export interface HttpNetConfig {
+  net?: string;
+  /**
+   * An address contains host and port.
+   * For example: example.com:80, 1.1.1.1:53, [::1]:443
+   */
+  server: string;
+  type: "http";
+  [k: string]: unknown | undefined;
+}
+export interface LocalNetConfig {
+  /**
+   * set nodelay
+   */
+  nodelay?: boolean | null;
+  /**
+   * set ttl
+   */
+  ttl?: number | null;
+  type: "local";
+  [k: string]: unknown | undefined;
+}
+export interface RawNetConfig {
+  device: string;
+  ethernet_addr: string;
+  gateway: string;
+  ip_addr: string;
+  mtu: number;
+  type: "raw";
+  [k: string]: unknown | undefined;
+}
+export interface ResolveConfig {
+  ipv4?: boolean;
+  ipv6?: boolean;
+  net: string;
+  type: "resolve";
+  [k: string]: unknown | undefined;
+}
+export interface RuleNetConfig {
   rule: NetRule_RuleItem[];
   type: "rule";
   [k: string]: unknown | undefined;
 }
+export interface SelectNetConfig {
+  list: string[];
+  selected: number;
+  type: "select";
+  [k: string]: unknown | undefined;
+}
 export interface SSNetConfig {
   cipher: NetShadowsocks_Cipher;
-  net?: NetShadowsocks_NetRef & string;
+  net?: string;
   password: string;
-  port: number;
+  /**
+   * An address contains host and port.
+   * For example: example.com:80, 1.1.1.1:53, [::1]:443
+   */
   server: string;
   type: "shadowsocks";
   udp?: boolean;
   [k: string]: unknown | undefined;
 }
+export interface Socks5NetConfig {
+  net?: string;
+  /**
+   * An address contains host and port.
+   * For example: example.com:80, 1.1.1.1:53, [::1]:443
+   */
+  server: string;
+  type: "socks5";
+  [k: string]: unknown | undefined;
+}
 export interface TrojanNetConfig {
-  net?: NetTrojan_NetRef & string;
+  net?: string;
   /**
    * password in plain text
    */
@@ -159,45 +328,77 @@ export interface TrojanNetConfig {
   udp?: boolean;
   [k: string]: unknown | undefined;
 }
-export interface SelectConfig {
-  list: string[];
-  selected: NetSelect_NetRef;
-  type: "select";
-  [k: string]: unknown | undefined;
-}
-export interface ClientConfig {
-  address: string;
-  net?: NetSocks5_NetRef & string;
-  port: number;
-  type: "socks5";
-  [k: string]: unknown | undefined;
-}
-export interface ServerConfig {
+export interface ForwardNetConfig {
+  /**
+   * An address contains host and port.
+   * For example: example.com:80, 1.1.1.1:53, [::1]:443
+   */
   bind: string;
   listen?: NetRef;
   net?: NetRef1;
-  type: "http";
-  [k: string]: unknown | undefined;
-}
-export interface ServerConfig1 {
-  bind: string;
-  listen?: NetRef2;
-  net?: NetRef3;
-  type: "socks5";
-  [k: string]: unknown | undefined;
-}
-export interface ForwardConfig {
-  bind: string;
-  listen?: NetRef4;
-  net?: NetRef5;
+  /**
+   * An address contains host and port.
+   * For example: example.com:80, 1.1.1.1:53, [::1]:443
+   */
   target: string;
   type: "forward";
   [k: string]: unknown | undefined;
 }
-export interface ServerConfig2 {
+export interface HttpServerConfig {
+  /**
+   * An address contains host and port.
+   * For example: example.com:80, 1.1.1.1:53, [::1]:443
+   */
   bind: string;
-  listen?: NetRef6;
-  net?: NetRef7;
+  listen?: NetRef2;
+  net?: NetRef3;
+  type: "http";
+  [k: string]: unknown | undefined;
+}
+export interface MixedServerConfig {
+  /**
+   * An address contains host and port.
+   * For example: example.com:80, 1.1.1.1:53, [::1]:443
+   */
+  bind: string;
+  listen?: NetRef4;
+  net?: NetRef5;
   type: "http+socks5";
+  [k: string]: unknown | undefined;
+}
+export interface RawServerConfig {
+  device: string;
+  ethernet_addr: string;
+  ip_addr: string;
+  listen?: NetRef6;
+  lru_size?: number;
+  mtu: number;
+  net?: NetRef7;
+  type: "raw";
+  [k: string]: unknown | undefined;
+}
+export interface SSServerConfig {
+  /**
+   * An address contains host and port.
+   * For example: example.com:80, 1.1.1.1:53, [::1]:443
+   */
+  bind: string;
+  cipher: ServerShadowsocks_Cipher;
+  listen?: NetRef8;
+  net?: NetRef9;
+  password: string;
+  type: "shadowsocks";
+  udp?: boolean;
+  [k: string]: unknown | undefined;
+}
+export interface Socks5ServerConfig {
+  /**
+   * An address contains host and port.
+   * For example: example.com:80, 1.1.1.1:53, [::1]:443
+   */
+  bind: string;
+  listen?: NetRef10;
+  net?: NetRef11;
+  type: "socks5";
   [k: string]: unknown | undefined;
 }
