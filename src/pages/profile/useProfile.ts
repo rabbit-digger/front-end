@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
 import { useCallback } from 'react'
-import { FetchError, useDeleteUserdata, usePutUserdata, useUserdata } from '../../rdp'
+import { FetchError, useDeleteUserdata, useFetchUserdata, usePostConfig, usePutUserdata, useUserdata } from '../../rdp'
+import { RabbitDiggerConfig } from '../../rdp/types'
+import * as YAML from 'yaml'
 
 export const Index = 'index.json'
 export type ProfileType = {
@@ -19,6 +21,8 @@ export const useProfile = () => {
   const { data, error, mutate } = useUserdata(Index)
   const put = usePutUserdata()
   const del = useDeleteUserdata()
+  const fetchUserdata = useFetchUserdata()
+  const postConfig = usePostConfig()
   const index = (typeof data?.body === 'string') ? (JSON.parse(data.body) as IndexType) : undefined
 
   const newProfile = useCallback(async () => {
@@ -57,6 +61,17 @@ export const useProfile = () => {
     mutate()
   }, [index, del, put, mutate])
 
+  const selectProfile = useCallback(async (filename: string) => {
+    const config = YAML.parse(await fetchUserdata(filename)) as RabbitDiggerConfig
+    await postConfig({
+      id: filename,
+      config,
+    })
+    mutate()
+  }, [mutate, postConfig, fetchUserdata])
+
+  const editProfile = useCallback(() => { }, [])
+
   useEffect(() => {
     if (error instanceof FetchError && error.res.status === 404) {
       put(Index, JSON.stringify(DefaultIndex)).then(() => mutate())
@@ -66,6 +81,8 @@ export const useProfile = () => {
   return {
     newProfile,
     deleteProfile,
+    selectProfile,
+    editProfile,
     profile: index?.profile ?? [],
     error,
     index,

@@ -20,4 +20,5 @@ const jsonSchema = (await exec(`cargo run --features=${Features} -- generate-sch
 console.log('Generate schema done.')
 const result = await compile(JSON.parse(jsonSchema), 'Config', { strictIndexSignatures: true })
 writeFileSync('src/rdp/generated.ts', result)
+writeFileSync('src/rdp/jsonSchema.json', jsonSchema)
 console.log('Done')

@@ -65,8 +65,16 @@ export const usePostConfig = () => {
   return useCallback(async (config: RabbitDiggerProConfig) => {
     const r = await mutate('/api/config', post<RabbitDiggerProConfig>('/api/config', config))
     await mutate('/api/state')
-    return r
+    return r as RabbitDiggerConfig
   }, [post])
+}
+
+export const useFetchUserdata = () => {
+  const conn = useContext(ConnectionContext)
+  return useCallback(async (path: string) => {
+    const fetch = getFetcher(conn)
+    return (await fetch<{ body: string }>('/api/userdata/' + path)).body
+  }, [conn])
 }
 
 export const useUserdata = (path: string) => {
