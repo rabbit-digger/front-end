@@ -1,16 +1,17 @@
 import { DeleteIcon, EditIcon, CheckIcon } from '@chakra-ui/icons'
-import { VStack, HStack, Box, Button, Divider, IconButton, Drawer, useDisclosure, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, DrawerFooter, Spinner } from '@chakra-ui/react'
+import { VStack, HStack, Box, Button, Divider, IconButton, Text, Drawer, useDisclosure, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, DrawerFooter, Spinner, Editable, EditablePreview, EditableInput } from '@chakra-ui/react'
 import React from 'react'
-import { useConfig, usePutUserdata, useUserdata } from '../../rdp'
+import { useConfig, useUserdata } from '../../rdp'
 import { useTitle } from '../index/Index'
 import { ProfileType, useProfile } from './useProfile'
 import { YamlEditor } from '../../components/YamlEditor'
 import { useState } from 'react'
 import { useEffect } from 'react'
+import { useTimeAgo } from '../../hooks/useTimeAgo'
 
 const EditorDrawer: React.FC<{ filename: string, onClose: () => void }> = ({ filename, onClose }) => {
   const { data, mutate } = useUserdata(filename)
-  const put = usePutUserdata()
+  const { editProfile } = useProfile()
   const [value, setValue] = useState('')
 
   useEffect(() => {
@@ -29,7 +30,7 @@ const EditorDrawer: React.FC<{ filename: string, onClose: () => void }> = ({ fil
         Cancel
       </Button>
       <Button colorScheme="blue" disabled={!data} onClick={async () => {
-        await put(filename, value)
+        await editProfile(filename, value)
         mutate()
         onClose()
       }}>Save</Button>
@@ -37,21 +38,53 @@ const EditorDrawer: React.FC<{ filename: string, onClose: () => void }> = ({ fil
   </>
 }
 
-const ProfileItem: React.FC<{ profile: ProfileType }> = ({ profile: { filename } }) => {
+const ProfileItem: React.FC<{ profile: ProfileType }> = ({ profile: { filename, displayName, updatedAt } }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { deleteProfile, selectProfile } = useProfile()
+  const { deleteProfile, selectProfile, renameProfile } = useProfile()
   const { data } = useConfig()
+  const display = displayName ?? filename
+  const timeAgo = useTimeAgo()
 
-  return <HStack
-    justify='space-between'
-    w='100%'
-    p={2}
-    _hover={{
-      cursor: 'pointer',
-      bg: 'blackAlpha.200',
-    }}
-    onClick={() => selectProfile(filename)}
-  >
+  return <>
+    <HStack
+      justify='space-between'
+      w='100%'
+      p={2}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          selectProfile(filename)
+        }
+      }}
+      _hover={{
+        cursor: 'pointer',
+        bg: 'blackAlpha.200',
+      }}
+    >
+      <VStack alignItems='flex-start' spacing={0}>
+        <HStack>
+          <Editable defaultValue={display} flex='auto' onSubmit={(v) => renameProfile(filename, v)}>
+            <EditablePreview />
+            <EditableInput />
+          </Editable>
+          {data?.id === filename && <CheckIcon color='green' />}
+        </HStack>
+        <Text pointerEvents='none' userSelect='none' fontSize='sm'>
+          Updated at {timeAgo(updatedAt)}
+        </Text>
+      </VStack>
+      <HStack>
+        <IconButton
+          aria-label="Edit profile"
+          icon={<EditIcon />}
+          onClick={() => onOpen()}
+        />
+        <IconButton
+          aria-label="Delete profile"
+          icon={<DeleteIcon />}
+          onClick={() => deleteProfile(filename)}
+        />
+      </HStack>
+    </HStack>
     <Drawer
       isOpen={isOpen}
       placement="right"
@@ -61,36 +94,12 @@ const ProfileItem: React.FC<{ profile: ProfileType }> = ({ profile: { filename }
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />
-        <DrawerHeader>Edit {filename}</DrawerHeader>
+        <DrawerHeader>Edit {display}</DrawerHeader>
 
         <EditorDrawer filename={filename} onClose={onClose} />
       </DrawerContent>
     </Drawer>
-    <HStack>
-      <Box>{filename}</Box>
-      {data?.id === filename && <CheckIcon color='green' />}
-    </HStack>
-    <HStack>
-      <IconButton
-        aria-label="Edit profile"
-        size='sm'
-        icon={<EditIcon />}
-        onClick={(e) => {
-          e.stopPropagation()
-          onOpen()
-        }}
-      />
-      <IconButton
-        aria-label="Delete profile"
-        size='sm'
-        icon={<DeleteIcon />}
-        onClick={(e) => {
-          e.stopPropagation()
-          deleteProfile(filename)
-        }}
-      />
-    </HStack>
-  </HStack>
+  </>
 }
 
 export const Profile: React.FC = () => {
