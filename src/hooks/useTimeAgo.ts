@@ -5,7 +5,7 @@ TimeAgo.addLocale(en)
 const timeAgo = new TimeAgo('en-US')
 
 export const useTimeAgo = () => {
-  const [_, refresh] = useState(false)
+  const [, refresh] = useState(false)
   useEffect(() => {
     // refresh the page every 10s
     const id = setInterval(() => refresh(i => !i), 10 * 1000)

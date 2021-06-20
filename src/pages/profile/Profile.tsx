@@ -1,5 +1,5 @@
 import { DeleteIcon, EditIcon, CheckIcon } from '@chakra-ui/icons'
-import { VStack, HStack, Box, Button, Divider, IconButton, Text, Drawer, useDisclosure, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, DrawerFooter, Spinner, Editable, EditablePreview, EditableInput } from '@chakra-ui/react'
+import { VStack, HStack, Box, Button, Divider, IconButton, Text, Drawer, useDisclosure, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, DrawerFooter, Spinner, Editable, EditablePreview, EditableInput, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter } from '@chakra-ui/react'
 import React from 'react'
 import { useConfig, useUserdata } from '../../rdp'
 import { useTitle } from '../index/Index'
@@ -38,9 +38,39 @@ const EditorDrawer: React.FC<{ filename: string, onClose: () => void }> = ({ fil
   </>
 }
 
+const DeleteButton: React.FC<{ filename: string, display: string }> = ({ filename, display }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { deleteProfile } = useProfile()
+
+  return <>
+
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Are you sure to remove profile: {display}</ModalHeader>
+
+        <ModalFooter>
+          <Button colorScheme="blue" mr={3} onClick={async () => {
+            await deleteProfile(filename)
+            onClose()
+          }}>
+            Confirm
+          </Button>
+          <Button variant="ghost" onClick={onClose}>Cancel</Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+    <IconButton
+      aria-label="Delete profile"
+      icon={<DeleteIcon />}
+      onClick={onOpen}
+    />
+  </>
+}
+
 const ProfileItem: React.FC<{ profile: ProfileType }> = ({ profile: { filename, displayName, updatedAt } }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { deleteProfile, selectProfile, renameProfile } = useProfile()
+  const { selectProfile, renameProfile } = useProfile()
   const { data } = useConfig()
   const display = displayName ?? filename
   const timeAgo = useTimeAgo()
@@ -78,11 +108,7 @@ const ProfileItem: React.FC<{ profile: ProfileType }> = ({ profile: { filename, 
           icon={<EditIcon />}
           onClick={() => onOpen()}
         />
-        <IconButton
-          aria-label="Delete profile"
-          icon={<DeleteIcon />}
-          onClick={() => deleteProfile(filename)}
-        />
+        <DeleteButton filename={filename} display={display} />
       </HStack>
     </HStack>
     <Drawer
