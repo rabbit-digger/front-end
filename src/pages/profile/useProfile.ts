@@ -1,8 +1,6 @@
 import { useEffect } from 'react'
 import { useCallback } from 'react'
-import { FetchError, useDeleteUserdata, useFetchUserdata, usePostConfig, usePutUserdata, useUserdata } from '../../rdp'
-import { RabbitDiggerConfig } from '../../rdp/types'
-import * as YAML from 'yaml'
+import { FetchError, useDeleteUserdata, usePostConfig, usePutUserdata, useUserdata } from '../../rdp'
 import { v4 } from 'uuid'
 
 export const Index = 'index.json'
@@ -25,7 +23,6 @@ export const useProfile = () => {
   const { data, error, mutate } = useUserdata(Index)
   const put = usePutUserdata()
   const del = useDeleteUserdata()
-  const fetchUserdata = useFetchUserdata()
   const postConfig = usePostConfig()
   const index = (typeof data?.content === 'string') ? (JSON.parse(data.content) as IndexType) : undefined
 
@@ -68,13 +65,9 @@ export const useProfile = () => {
   }, [index, del, put, mutate])
 
   const selectProfile = useCallback(async (filename: string) => {
-    const config = YAML.parse(await fetchUserdata(filename)) as RabbitDiggerConfig
-    await postConfig({
-      id: filename,
-      ...config,
-    })
+    await postConfig(filename)
     mutate()
-  }, [mutate, postConfig, fetchUserdata])
+  }, [mutate, postConfig])
 
   const editByFilename = useCallback(async (filename: string, value: Partial<ProfileType>) => {
     if (!index) return

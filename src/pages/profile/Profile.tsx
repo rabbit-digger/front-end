@@ -96,7 +96,7 @@ const ProfileItem: React.FC<{ profile: ProfileType }> = ({ profile: { filename, 
             <EditablePreview />
             <EditableInput />
           </Editable>
-          {data?.id === filename && <CheckIcon color='green' />}
+          {data?.id?.endsWith(filename) && <CheckIcon color='green' />}
         </HStack>
         <Text pointerEvents='none' userSelect='none' fontSize='sm'>
           Updated at {timeAgo(updatedAt)}

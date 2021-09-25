@@ -1,19 +1,19 @@
 import React from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import { Index } from './pages/index/Index'
-import { Net } from './pages/net/Net'
+import { Select } from './pages/select/Select'
 import { Profile } from './pages/profile/Profile'
 import { Settings } from './pages/settings/Settings'
 
 export const Routes: React.FC = () => {
   return <>
     <Switch>
-      <Route path='/select'>select</Route>
+      <Route path='/select_endpoint'>select</Route>
       <Route path='/'>
         <Index>
           <Switch>
-            <Route path='/' exact><Redirect to='/net' /></Route>
-            <Route path='/net' component={Net}></Route>
+            <Route path='/' exact><Redirect to='/select' /></Route>
+            <Route path='/select' component={Select}></Route>
             <Route path='/profile' component={Profile}></Route>
             <Route path='/settings' component={Settings}></Route>
           </Switch>

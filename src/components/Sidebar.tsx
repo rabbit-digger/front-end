@@ -41,7 +41,7 @@ const SidebarContent = ({ onClick, banner }: { onClick: () => void, banner?: Rea
     >
       {banner}
     </Box>
-    <Link to='/net' onClick={onClick}>Net</Link>
+    <Link to='/select' onClick={onClick}>Select</Link>
     <Link to='/profile' onClick={onClick}>Profile</Link>
     <Link to='/settings' onClick={onClick}>Settings</Link>
   </VStack>

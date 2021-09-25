@@ -3,8 +3,8 @@ import React from 'react'
 import { useConfig } from '../../rdp'
 import { useTitle } from '../index/Index'
 
-export const Net: React.FC = () => {
-  useTitle('Net')
+export const Select: React.FC = () => {
+  useTitle('Select')
   const { data, error } = useConfig()
   const netList = data?.net ? Object.entries(data.net) : undefined
 

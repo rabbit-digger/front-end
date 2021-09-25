@@ -62,8 +62,13 @@ export const usePost = () => {
 
 export const usePostConfig = () => {
   const post = usePost()
-  return useCallback(async (config: RabbitDiggerProConfig) => {
-    const r = await mutate('/api/config', post<RabbitDiggerProConfig>('/api/config', config))
+  return useCallback(async (filename: string) => {
+    const r = await mutate('/api/config', post<RabbitDiggerProConfig>('/api/config', {
+      storage: {
+        folder: 'userdata',
+        key: filename,
+      }
+    }))
     await mutate('/api/state')
     return r as RabbitDiggerConfig
   }, [post])
