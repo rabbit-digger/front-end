@@ -22,7 +22,7 @@ export const Index: React.FC = ({ children }) => {
   const { data } = useRdpState()
 
   return <Box
-    bg='teal.600'
+    bg='teal.500'
     h='100vh'
     color='white'
   >
@@ -41,7 +41,7 @@ export const Index: React.FC = ({ children }) => {
             onShowSidebar={onToggle}
           />
         </Box>
-        <Box bg='white' p={3} color='black' h='100%' borderRadius='5' overflowY='auto'>
+        <Box bg='white' p={2} color='black' h='100%' borderRadius='5' overflowY='auto'>
           <TitleCtx.Provider value={setTitle}>
             {children}
           </TitleCtx.Provider>

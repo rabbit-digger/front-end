@@ -12,23 +12,23 @@ interface Props {
 
 export const Header = ({ showSidebarButton = true, onShowSidebar, left, right, title }: Props) => {
   return (
-    <Flex p={4} justifyContent="center">
-      <Box flex="1">
+    <Flex p={2} justifyContent="center">
+      <Box flex="1" h={8}>
         {showSidebarButton && (
           <IconButton
             aria-label='Toggle Sidebar'
             icon={<HamburgerIcon w={8} h={8} />}
             colorScheme="white"
-            variant="outline"
             onClick={onShowSidebar}
+            size='sm'
           />
         )}
         {left}
       </Box>
-      <Center flex="1" h="30px">
+      <Center flex="1" h={8}>
         <Text fontSize="xl">{title}</Text>
       </Center>
-      <Box flex="1">{right}</Box>
+      <Box flex="1" h={8}>{right}</Box>
     </Flex>
   )
 }

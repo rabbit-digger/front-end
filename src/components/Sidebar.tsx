@@ -18,10 +18,9 @@ const Link: React.FC<Omit<LinkProps, 'to'> & RRLinkProps & { to: string }> = ({ 
   return <ChakraLink
     {...props}
     to={to}
-    p={3}
+    p={2}
     as={RRLink}
     w='100%'
-    textAlign='center'
     bg={selected ? 'blackAlpha.100' : undefined}
     _hover={{ textDecoration: 'none', bg: 'blackAlpha.200' }}
   >{children}</ChakraLink>
@@ -38,7 +37,7 @@ const SidebarContent = ({ onClick, banner }: { onClick: () => void, banner?: Rea
   <VStack spacing={0}>
     <Box
       width='100%'
-      h='62px'
+      h={12}
     >
       {banner}
     </Box>
@@ -51,7 +50,7 @@ const SidebarContent = ({ onClick, banner }: { onClick: () => void, banner?: Rea
 export const Sidebar = ({ isOpen, variant, onClose, banner }: Props) => {
   return variant === 'sidebar' ? (
     <Box
-      w="200px"
+      w="180px"
       h="100%"
       bg='blackAlpha.100'
     >
@@ -61,11 +60,11 @@ export const Sidebar = ({ isOpen, variant, onClose, banner }: Props) => {
     <Drawer isOpen={isOpen} placement="left" onClose={onClose} size='xs'>
       <DrawerOverlay>
         <DrawerContent
-          bg='teal.600'
+          bg='teal.500'
           color='white'
         >
           <DrawerCloseButton />
-          <DrawerBody>
+          <DrawerBody p='0'>
             <SidebarContent onClick={onClose} />
           </DrawerBody>
         </DrawerContent>
