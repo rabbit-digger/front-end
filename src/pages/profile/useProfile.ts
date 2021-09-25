@@ -27,7 +27,7 @@ export const useProfile = () => {
   const del = useDeleteUserdata()
   const fetchUserdata = useFetchUserdata()
   const postConfig = usePostConfig()
-  const index = (typeof data?.body === 'string') ? (JSON.parse(data.body) as IndexType) : undefined
+  const index = (typeof data?.content === 'string') ? (JSON.parse(data.content) as IndexType) : undefined
 
   const newProfile = useCallback(async () => {
     if (!index) return

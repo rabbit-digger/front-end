@@ -16,7 +16,7 @@ const EditorDrawer: React.FC<{ filename: string, onClose: () => void }> = ({ fil
 
   useEffect(() => {
     if (data) {
-      setValue(data.body)
+      setValue(data.content)
     }
   }, [data, setValue])
 

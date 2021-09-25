@@ -73,12 +73,12 @@ export const useFetchUserdata = () => {
   const conn = useContext(ConnectionContext)
   return useCallback(async (path: string) => {
     const fetch = getFetcher(conn)
-    return (await fetch<{ body: string }>('/api/userdata/' + path)).body
+    return (await fetch<{ content: string }>('/api/userdata/' + path)).content
   }, [conn])
 }
 
 export const useUserdata = (path: string) => {
-  return useSWR<{ body: string }>('/api/userdata/' + path)
+  return useSWR<{ content: string }>('/api/userdata/' + path)
 }
 
 export const usePutUserdata = () => {

@@ -6,8 +6,13 @@
 use std::net::SocketAddr;
 
 use anyhow::{Context, Result};
-use rabbit_digger::controller::Controller;
-use rabbit_digger_pro::{api_server, plugin_loader, rabbit_digger};
+use rabbit_digger::RabbitDiggerBuilder;
+use rabbit_digger_pro::{
+    api_server,
+    config::ConfigManager,
+    plugin_loader,
+    rabbit_digger::{self, RabbitDigger},
+};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -20,13 +25,13 @@ pub struct ServerListen {
     pub addr: SocketAddr,
 }
 
-async fn run_server(controller: &Controller) -> Result<ServerListen> {
+async fn run_server(rd: RabbitDigger, cfg_mgr: ConfigManager) -> Result<ServerListen> {
     let access_token = Uuid::new_v4().to_string();
     let addr = api_server::Server {
-        controller: controller.clone(),
-        access_token: Some(access_token.clone()),
+        rabbit_digger: rd,
+        config_manager: cfg_mgr,
+        access_token: Some(access_token.to_string()),
         web_ui: None,
-        userdata: None,
     }
     .run("127.0.0.1:0")
     .await
@@ -37,18 +42,24 @@ async fn run_server(controller: &Controller) -> Result<ServerListen> {
 #[tokio::main]
 async fn main() -> Result<()> {
     if std::env::var_os("RUST_LOG").is_none() {
-        std::env::set_var("RUST_LOG", "rabbit_ui=trace,rabbit_digger_pro=trace")
+        std::env::set_var(
+            "RUST_LOG",
+            "rabbit_ui=trace,rabbit_digger=trace,rabbit_digger_pro=trace,rd_std=trace,raw=trace",
+        )
     }
     tracing_subscriber::fmt::init();
 
-    let controller = Controller::new();
-    controller.set_plugin_loader(plugin_loader).await;
-    let server = run_server(&controller).await?;
+    let rd = RabbitDiggerBuilder::new()
+        .plugin_loader(plugin_loader)
+        .build()
+        .await?;
+    let cfg_mgr = ConfigManager::new().await?;
+    let server = run_server(rd.clone(), cfg_mgr.clone()).await?;
 
     tracing::debug!("server: {:?}", server);
 
     tauri::Builder::default()
-        .manage(controller)
+        .manage(rd)
         .manage(server)
         .invoke_handler(tauri::generate_handler![
             command::get_proxy,
