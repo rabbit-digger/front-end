@@ -5,7 +5,40 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
+export type Nullable_String = string | null;
+export type ImportSource =
+  | {
+      path: string;
+    }
+  | {
+      poll: ImportUrl;
+    }
+  | {
+      storage: ImportStorage;
+    };
 export type EmptyConfig = null;
+export type Net =
+  | (
+      | AliasNetConfig
+      | EmptyConfig1
+      | CombineNetConfig
+      | DNSNetConfig
+      | HttpNetConfig
+      | LocalNetConfig
+      | EmptyConfig2
+      | ObfsNetConfig
+      | RawNetConfig
+      | ResolveConfig
+      | RpcNetConfig
+      | RuleNetConfig
+      | SelectNetConfig
+      | SSNetConfig
+      | Socks5NetConfig
+      | TrojanNetConfig
+    )
+  | undefined;
+export type EmptyConfig1 = null;
+export type EmptyConfig2 = null;
 export type ObfsNetConfig =
   | {
       obfs_param: string;
@@ -16,39 +49,27 @@ export type ObfsNetConfig =
       obfs_type: "plain";
       [k: string]: unknown | undefined;
     };
-export type RemoteNetConfig =
-  | {
-      mode: "active";
-      /**
-       * An address contains host and port.
-       * For example: example.com:80, 1.1.1.1:53, [::1]:443
-       */
-      remote: string;
-      [k: string]: unknown | undefined;
-    }
-  | {
-      /**
-       * An address contains host and port.
-       * For example: example.com:80, 1.1.1.1:53, [::1]:443
-       */
-      bind: string;
-      mode: "passive";
-      [k: string]: unknown | undefined;
-    };
+export type NetRaw_MaybeStringFor_TunTapConfig = string | NetRaw_TunTapConfig;
+export type NetRaw_TunTap = "tap" | "tun";
 export type NetRule_RuleItem =
   | {
-      domain: string;
+      domain: NetRule_SingleOrVecFor_String;
       method: NetRule_DomainMatcherMethod;
       type: "domain";
       [k: string]: unknown | undefined;
     }
   | {
-      ipcidr: NetRule_IpCidr;
+      ipcidr: NetRule_SingleOrVecFor_IpCidr;
       type: "ipcidr";
       [k: string]: unknown | undefined;
     }
   | {
-      region: string;
+      ipcidr: NetRule_SingleOrVecFor_IpCidr;
+      type: "src_ipcidr";
+      [k: string]: unknown | undefined;
+    }
+  | {
+      country: string;
       type: "geoip";
       [k: string]: unknown | undefined;
     }
@@ -56,7 +77,9 @@ export type NetRule_RuleItem =
       type: "any";
       [k: string]: unknown | undefined;
     };
+export type NetRule_SingleOrVecFor_String = string | string[];
 export type NetRule_DomainMatcherMethod = "keyword" | "suffix" | "match";
+export type NetRule_SingleOrVecFor_IpCidr = NetRule_IpCidr | NetRule_IpCidr[];
 export type NetRule_IpCidr = string;
 export type NetShadowsocks_Cipher =
   | "none"
@@ -104,33 +127,18 @@ export type NetShadowsocks_Cipher =
   | "xchacha20-ietf-poly1305"
   | "sm4-gcm"
   | "sm4-ccm";
-export type NetRef = string;
-export type NetRef1 = string;
-export type NetRef2 = string;
-export type NetRef3 = string;
-export type NetRef4 = string;
-export type NetRef5 = string;
-export type NetRef6 = string;
-export type NetRef7 = string;
-export type RemoteProtocolConfig =
-  | {
-      mode: "active";
-      /**
-       * An address contains host and port.
-       * For example: example.com:80, 1.1.1.1:53, [::1]:443
-       */
-      remote: string;
-      [k: string]: unknown | undefined;
-    }
-  | {
-      /**
-       * An address contains host and port.
-       * For example: example.com:80, 1.1.1.1:53, [::1]:443
-       */
-      bind: string;
-      mode: "passive";
-      [k: string]: unknown | undefined;
-    };
+export type Server =
+  | (
+      | EchoServerConfig
+      | ForwardServerConfig
+      | HttpServerConfig
+      | MixedServerConfig
+      | RawServerConfig
+      | RpcServerConfig
+      | SSServerConfig
+      | Socks5ServerConfig
+    )
+  | undefined;
 export type ServerShadowsocks_Cipher =
   | "none"
   | "table"
@@ -177,62 +185,69 @@ export type ServerShadowsocks_Cipher =
   | "xchacha20-ietf-poly1305"
   | "sm4-gcm"
   | "sm4-ccm";
-export type NetRef8 = string;
-export type NetRef9 = string;
-export type NetRef10 = string;
-export type NetRef11 = string;
 
 export interface Config {
   id?: string;
+  import?: (Clash | EmptyConfig)[];
   net?: {
-    [k: string]:
-      | (
-          | AliasNetConfig
-          | CombineNetConfig
-          | HttpNetConfig
-          | LocalNetConfig
-          | EmptyConfig
-          | ObfsNetConfig
-          | RawNetConfig
-          | RemoteNetConfig
-          | ResolveConfig
-          | RuleNetConfig
-          | SelectNetConfig
-          | SSNetConfig
-          | Socks5NetConfig
-          | TrojanNetConfig
-        )
-      | undefined;
+    [k: string]: NetUndefined;
   };
   server?: {
-    [k: string]:
-      | (
-          | ForwardNetConfig
-          | HttpServerConfig
-          | MixedServerConfig
-          | RawServerConfig
-          | RemoteProtocolConfig
-          | SSServerConfig
-          | Socks5ServerConfig
-        )
-      | undefined;
+    [k: string]: ServerUndefined;
   };
   [k: string]: unknown | undefined;
 }
+export interface Clash {
+  direct?: string | null;
+  disable_proxy_group?: boolean;
+  name?: Nullable_String;
+  prefix?: string | null;
+  reject?: string | null;
+  rule_name?: string | null;
+  /**
+   * Make all proxies in the group name
+   */
+  select?: string | null;
+  source: ImportSource;
+  type: "clash";
+  [k: string]: unknown | undefined;
+}
+export interface ImportUrl {
+  interval?: number | null;
+  url: string;
+  [k: string]: unknown | undefined;
+}
+export interface ImportStorage {
+  folder: string;
+  key: string;
+  [k: string]: unknown | undefined;
+}
+/**
+ * A net refering to another net.
+ */
 export interface AliasNetConfig {
-  net: string;
+  net: string | Net | undefined;
   type: "alias";
   [k: string]: unknown | undefined;
 }
+/**
+ * CombineNet merges multiple nets into one.
+ */
 export interface CombineNetConfig {
-  tcp_bind: string;
-  tcp_connect: string;
+  lookup_host: string | Net | undefined;
+  tcp_bind: string | Net | undefined;
+  tcp_connect: string | Net | undefined;
   type: "combine";
-  udp_bind: string;
+  udp_bind: string | Net | undefined;
+  [k: string]: unknown | undefined;
+}
+export interface DNSNetConfig {
+  net?: string | Net | undefined;
+  type: "dns_sniffer";
   [k: string]: unknown | undefined;
 }
 export interface HttpNetConfig {
-  net?: string;
+  net?: string | Net | undefined;
   /**
    * An address contains host and port.
    * For example: example.com:80, 1.1.1.1:53, [::1]:443
@@ -241,11 +256,34 @@ export interface HttpNetConfig {
   type: "http";
   [k: string]: unknown | undefined;
 }
+/**
+ * A local network.
+ */
 export interface LocalNetConfig {
   /**
-   * set nodelay
+   * bind to address
+   */
+  bind_addr?: string | null;
+  /**
+   * bind to device
+   */
+  bind_device?: string | null;
+  /**
+   * timeout of TCP connect, in seconds.
+   */
+  connect_timeout?: number | null;
+  /**
+   * set SO_MARK on linux
+   */
+  mark?: number | null;
+  /**
+   * set nodelay. default is true
    */
   nodelay?: boolean | null;
+  /**
+   * enable keepalive on TCP socket, in seconds. default is 600s.
+   */
+  tcp_keepalive?: number | null;
   /**
    * set ttl
    */
@@ -254,35 +292,60 @@ export interface LocalNetConfig {
   [k: string]: unknown | undefined;
 }
 export interface RawNetConfig {
-  device: string;
-  ethernet_addr: string;
-  gateway: string;
+  device: NetRaw_MaybeStringFor_TunTapConfig;
+  ethernet_addr?: string | null;
+  forward?: boolean;
+  gateway?: string | null;
+  /**
+   * IP Cidr
+   */
   ip_addr: string;
   mtu: number;
   type: "raw";
   [k: string]: unknown | undefined;
 }
+export interface NetRaw_TunTapConfig {
+  /**
+   * host address
+   */
+  host_addr: string;
+  name?: string | null;
+  type: NetRaw_TunTap;
+  [k: string]: unknown | undefined;
+}
 export interface ResolveConfig {
   ipv4?: boolean;
   ipv6?: boolean;
-  net: string;
+  net: string | Net | undefined;
+  resolve_net: string | Net | undefined;
   type: "resolve";
   [k: string]: unknown | undefined;
 }
+export interface RpcNetConfig {
+  /**
+   * An address contains host and port.
+   * For example: example.com:80, 1.1.1.1:53, [::1]:443
+   */
+  endpoint: string;
+  net?: string | Net | undefined;
+  type: "rpc";
+  [k: string]: unknown | undefined;
+}
 export interface RuleNetConfig {
+  lru_cache_size?: number;
   rule: NetRule_RuleItem[];
   type: "rule";
   [k: string]: unknown | undefined;
 }
 export interface SelectNetConfig {
-  list: string[];
-  selected: number;
+  list: (string | Net | undefined)[];
+  selected: string | Net | undefined;
   type: "select";
   [k: string]: unknown | undefined;
 }
 export interface SSNetConfig {
   cipher: NetShadowsocks_Cipher;
-  net?: string;
+  net?: string | Net | undefined;
   password: string;
   /**
    * An address contains host and port.
@@ -294,7 +357,7 @@ export interface SSNetConfig {
   [k: string]: unknown | undefined;
 }
 export interface Socks5NetConfig {
-  net?: string;
+  net?: string | Net | undefined;
   /**
    * An address contains host and port.
    * For example: example.com:80, 1.1.1.1:53, [::1]:443
@@ -304,7 +367,7 @@ export interface Socks5NetConfig {
   [k: string]: unknown | undefined;
 }
 export interface TrojanNetConfig {
-  net?: string;
+  net?: string | Net | undefined;
   /**
    * password in plain text
    */
@@ -320,28 +383,54 @@ export interface TrojanNetConfig {
   /**
    * sni
    */
-  sni: string;
+  sni?: string | null;
   type: "trojan";
   /**
    * enable udp or not
    */
   udp?: boolean;
+  /**
+   * enabled websocket support
+   */
+  websocket?: NetTrojan_WebSocket | null;
   [k: string]: unknown | undefined;
 }
-export interface ForwardNetConfig {
+export interface NetTrojan_WebSocket {
+  host: string;
+  path: string;
+  [k: string]: unknown | undefined;
+}
+/**
+ * A echo server.
+ */
+export interface EchoServerConfig {
   /**
    * An address contains host and port.
    * For example: example.com:80, 1.1.1.1:53, [::1]:443
    */
   bind: string;
-  listen?: NetRef;
-  net?: NetRef1;
+  listen?: string | Net | undefined;
+  type: "echo";
+  [k: string]: unknown | undefined;
+}
+/**
+ * A server that forwards all connections to target.
+ */
+export interface ForwardServerConfig {
+  /**
+   * An address contains host and port.
+   * For example: example.com:80, 1.1.1.1:53, [::1]:443
+   */
+  bind: string;
+  listen?: string | Net | undefined;
+  net?: string | Net | undefined;
   /**
    * An address contains host and port.
    * For example: example.com:80, 1.1.1.1:53, [::1]:443
    */
   target: string;
   type: "forward";
+  udp?: boolean;
   [k: string]: unknown | undefined;
 }
 export interface HttpServerConfig {
@@ -350,8 +439,8 @@ export interface HttpServerConfig {
    * For example: example.com:80, 1.1.1.1:53, [::1]:443
    */
   bind: string;
-  listen?: NetRef2;
-  net?: NetRef3;
+  listen?: string | Net | undefined;
+  net?: string | Net | undefined;
   type: "http";
   [k: string]: unknown | undefined;
 }
@@ -361,20 +450,29 @@ export interface MixedServerConfig {
    * For example: example.com:80, 1.1.1.1:53, [::1]:443
    */
   bind: string;
-  listen?: NetRef4;
-  net?: NetRef5;
+  listen?: string | Net | undefined;
+  net?: string | Net | undefined;
   type: "http+socks5";
   [k: string]: unknown | undefined;
 }
 export interface RawServerConfig {
-  device: string;
-  ethernet_addr: string;
-  ip_addr: string;
-  listen?: NetRef6;
-  lru_size?: number;
-  mtu: number;
-  net?: NetRef7;
+  /**
+   * Must be raw net.
+   */
+  listen: string | Net | undefined;
+  net?: string | Net | undefined;
   type: "raw";
+  [k: string]: unknown | undefined;
+}
+export interface RpcServerConfig {
+  /**
+   * An address contains host and port.
+   * For example: example.com:80, 1.1.1.1:53, [::1]:443
+   */
+  bind: string;
+  listen?: string | Net | undefined;
+  net?: string | Net | undefined;
+  type: "rpc";
   [k: string]: unknown | undefined;
 }
 export interface SSServerConfig {
@@ -384,8 +482,8 @@ export interface SSServerConfig {
    */
   bind: string;
   cipher: ServerShadowsocks_Cipher;
-  listen?: NetRef8;
-  net?: NetRef9;
+  listen?: string | Net | undefined;
+  net?: string | Net | undefined;
   password: string;
   type: "shadowsocks";
   udp?: boolean;
@@ -397,8 +495,8 @@ export interface Socks5ServerConfig {
    * For example: example.com:80, 1.1.1.1:53, [::1]:443
    */
   bind: string;
-  listen?: NetRef10;
-  net?: NetRef11;
+  listen?: string | Net | undefined;
+  net?: string | Net | undefined;
   type: "socks5";
   [k: string]: unknown | undefined;
 }

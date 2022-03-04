@@ -4,7 +4,7 @@ import { compile } from 'json-schema-to-typescript'
 import { writeFileSync } from 'fs'
 const exec = promisify(execCb)
 
-const Features = 'tracing-subscriber,raw'
+const Features = 'raw'
 
 const code = await new Promise((res, rej) => {
   const child = spawn('cargo', ['build', '--features=' + Features], { cwd: 'rabbit-digger-pro', stdio: 'inherit' })
