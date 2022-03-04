@@ -10,7 +10,7 @@ export const getApiListen = async (): Promise<ServerListen> => {
     console.log('Get server info: ', serverInfo)
     return serverInfo
   } catch (e) {
-    console.log("Failed to get tauri version")
+    console.log("Failed to get tauri version", e)
     return { addr: window.location.host, access_token: '' }
   }
 }

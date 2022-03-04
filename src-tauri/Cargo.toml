@@ -23,7 +23,7 @@ tauri = { version = "1.0.0-rc.3", features = ["api-all"] }
 anyhow = "1.0"
 tokio = { version = "1.0", features = ["full"] }
 rabbit-digger-pro = { version = "0.1", path = "../rabbit-digger-pro/", features = [
-  "raw",
+    "raw",
 ] }
 uuid = { version = "0.8", features = ["v4"] }
 
