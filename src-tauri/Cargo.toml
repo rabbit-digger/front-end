@@ -6,28 +6,30 @@ authors = ["spacemeowx2"]
 license = ""
 repository = ""
 default-run = "rabbit-ui"
-edition = "2018"
+edition = "2021"
 build = "src/build.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "1.0.0-beta.0" }
+tauri-build = { version = "1.0.0-rc.3" }
 
 [dependencies]
 tracing = "0.1.26"
-tracing-subscriber = "0.2.18"
+tracing-subscriber = "0.3.9"
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "1.0.0-beta.1", features = ["api-all"] }
+tauri = { version = "1.0.0-rc.3", features = ["api-all"] }
 anyhow = "1.0"
 tokio = { version = "1.0", features = ["full"] }
-rabbit-digger-pro = { version = "0.1", path = "../rabbit-digger-pro/", features = ["raw"] }
+rabbit-digger-pro = { version = "0.1", path = "../rabbit-digger-pro/", features = [
+  "raw",
+] }
 uuid = { version = "0.8", features = ["v4"] }
 
 [target.'cfg(windows)'.dependencies]
-winreg = "0.8"
+winreg = "0.10.1"
 
 [features]
-default = [ "custom-protocol" ]
-custom-protocol = [ "tauri/custom-protocol" ]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]

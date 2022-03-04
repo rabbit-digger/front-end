@@ -6,12 +6,8 @@
 use std::net::SocketAddr;
 
 use anyhow::{Context, Result};
-use rabbit_digger::RabbitDiggerBuilder;
 use rabbit_digger_pro::{
-    api_server,
-    config::ConfigManager,
-    plugin_loader,
-    rabbit_digger::{self, RabbitDigger},
+    api_server, config::ConfigManager, get_registry, rabbit_digger::RabbitDigger,
 };
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
@@ -49,11 +45,8 @@ async fn main() -> Result<()> {
     }
     tracing_subscriber::fmt::init();
 
-    let rd = RabbitDiggerBuilder::new()
-        .plugin_loader(plugin_loader)
-        .build()
-        .await?;
-    let cfg_mgr = ConfigManager::new().await?;
+    let rd = RabbitDigger::new(get_registry()?).await?;
+    let cfg_mgr = ConfigManager::new(get_registry()?).await?;
     let server = run_server(rd.clone(), cfg_mgr.clone()).await?;
 
     tracing::debug!("server: {:?}", server);
