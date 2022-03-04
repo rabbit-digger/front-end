@@ -1,0 +1,36 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "start",
+      "problemMatcher": [],
+      "label": "frontend",
+      "presentation": {
+        "group": "dev"
+      }
+    },
+    {
+      "type": "cargo",
+      "command": "tauri",
+      "args": [
+        "dev"
+      ],
+      "label": "tauri",
+      "presentation": {
+        "group": "dev"
+      }
+    },
+    {
+      "label": "Dev",
+      "dependsOn": [
+        "frontend",
+        "tauri"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}
